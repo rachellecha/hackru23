@@ -1,5 +1,4 @@
       YEAR,MONTH          ,CATEGORY                                                    ,CANCEL_COUNT,CANCEL_TOTAL,CANCEL_PERCENTAGE
-----------,---------------,------------------------------------------------------------,------------,------------,-----------------
       2017,JANUARY        ,AMTRAK                                                      ,          94,         207,             45.4
       2023,JANUARY        ,Unpreventable                                               ,          11,         104,             10.6
       2017,JANUARY        ,Equipment Availability                                      ,           1,         207,               .5
