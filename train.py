@@ -4,34 +4,32 @@ from catboost import CatBoostRegressor
 from catboost import Pool
 import numpy as np
 from sklearn.metrics import mean_squared_error
+import matplotlib.pyplot as plt
+import seaborn as sns
 import pickle
 
 
 
 df = pd.read_csv("final_2019.csv")
 
-df[['train_id', 'stop_sequence', 'from_id', 'to_id']] = df[['train_id', 'stop_sequence', 'from_id', 'to_id']].astype(str)
-
-#print(df.dtypes)
+df[['month', 'day', 'hour', 'min']] = df[['month', 'day', 'hour', 'min']].astype(str)
 
 #predict delay change
-y = df.pop("delay_change")
+y = df.pop("delay_minutes")
 
 X = df
 #print(X.dtypes)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-print(X_train.dtypes)
-#print("train data size:",X_train.shape)
-#print("test data size:",X_test.shape)
-
 
 #List of categorical columns
 categoricalcolumns = df.columns.tolist()
 #print("Names of categorical columns : ", categoricalcolumns)
+
 #Get location of categorical columns
 cat_features = [X.columns.get_loc(col) for col in categoricalcolumns]
 #print("Location of categorical columns : ",cat_features)
+
 
 train_data = Pool(data=X_train,
                   label=y_train,
@@ -44,9 +42,9 @@ test_data = Pool(data=X_test,
                   cat_features=cat_features
                  )
 
-model = CatBoostRegressor(iterations=10,
-                          learning_rate=1,
-                          depth=2)
+model = CatBoostRegressor(iterations=500,
+                          learning_rate=0.1,
+                          depth=10)
 
 model.fit(X_train, 
           y_train, 
@@ -57,5 +55,15 @@ model.fit(X_train,
 rmse = np.sqrt(mean_squared_error(y_test, model.predict(X_test)))
 print(rmse)
 
-model.predict()
+# Create a dataframe of feature importance 
+df_feature_importance = pd.DataFrame(model.get_feature_importance(prettified=True))
+#plotting feature importance
+plt.figure(figsize=(12, 6));
+feature_plot= sns.barplot(x="Importances", y="Feature Id", data=df_feature_importance,palette="cool");
+plt.title('features importance');
+plt.savefig('feature importance.png');
 
+pred = model.predict(['02','25', '09', '23', 'New Brunswick', 'Edison', 'Northeast Corrdr'])
+print(pred)
+
+pickle.dump(model, open('model.pkl', 'wb'))
