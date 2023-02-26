@@ -23,12 +23,12 @@ X = df
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
 #List of categorical columns
-categoricalcolumns = df.columns.tolist()
-#print("Names of categorical columns : ", categoricalcolumns)
+categoricalcolumns = X.select_dtypes(include=["object"]).columns.tolist()
+print("Names of categorical columns : ", categoricalcolumns)
 
 #Get location of categorical columns
 cat_features = [X.columns.get_loc(col) for col in categoricalcolumns]
-#print("Location of categorical columns : ",cat_features)
+print("Location of categorical columns : ",cat_features)
 
 
 train_data = Pool(data=X_train,
@@ -42,11 +42,17 @@ test_data = Pool(data=X_test,
                   cat_features=cat_features
                  )
 
-model = CatBoostRegressor(iterations=1000,
-                          learning_rate=0.1,
-                          early_stopping_rounds=5,
-                          depth=10)
+#model = CatBoostRegressor(iterations=1000,
+ #                         learning_rate=0.1,
+  #                        early_stopping_rounds=5,
+   #                       depth=10)
 
+model = CatBoostRegressor(iterations=100,
+                          learning_rate=0.1,
+                          depth = 10,
+                          early_stopping_rounds= 5,
+                          l2_leaf_reg = 7
+                          )
 
 model.fit(X_train, 
           y_train, 
@@ -65,7 +71,7 @@ feature_plot= sns.barplot(x="Importances", y="Feature Id", data=df_feature_impor
 plt.title('features importance');
 plt.savefig('feature importance.png');
 
-pred = model.predict(['02','25', '09', '23', 'New Brunswick', 'Edison', 'Northeast Corrdr'])
+pred = model.predict(['02','25', '09', '23', 'New Brunswick', 'Edison', 'Northeast Corrdr', '0'])
 print(pred)
 
-pickle.dump(model, open('model.pkl', 'wb'))
+pickle.dump(model, open('model_022623_night.pkl', 'wb'))

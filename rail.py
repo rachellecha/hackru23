@@ -30,7 +30,18 @@ all_2019[['month','day','hour','min']] = all_2019['scheduled_time'].str.extract(
 all_2019.drop("scheduled_time", axis = 1, inplace = True)
 all_2019.drop("actual_time", axis = 1, inplace = True)
 
-all_2019 = all_2019[['month', 'day', 'hour', 'min', 'from', 'to', 'line', 'delay_minutes']]
+weather = pd.read_csv('weather.csv')
+
+all_2019[['month', 'day']] = all_2019[['month', 'day']].astype(int)
+
+all_2019 = pd.merge(all_2019, weather,  how='left', left_on=['month','day'], right_on = ['month','day'])
+
+all_2019[['month', 'day']] = all_2019[['month', 'day']].astype(str)
+
+all_2019['month'] = all_2019['month'].str.zfill(2)
+all_2019['day'] = all_2019['day'].str.zfill(2)
+
+all_2019 = all_2019[['month', 'day', 'hour', 'min', 'from', 'to', 'line', 'precipitation','delay_minutes']]
 
 #print(all_2019.head())
 
