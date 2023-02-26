@@ -47,11 +47,11 @@ test_data = Pool(data=X_test,
   #                        early_stopping_rounds=5,
    #                       depth=10)
 
-model = CatBoostRegressor(iterations=100,
-                          learning_rate=0.1,
-                          depth = 10,
+model = CatBoostRegressor(iterations=500,
+                          learning_rate=0.18,
+                          depth = 15,
                           early_stopping_rounds= 5,
-                          l2_leaf_reg = 7
+                          l2_leaf_reg = 1
                           )
 
 model.fit(X_train, 
@@ -74,4 +74,4 @@ plt.savefig('feature importance.png');
 pred = model.predict(['02','25', '09', '23', 'New Brunswick', 'Edison', 'Northeast Corrdr', '0'])
 print(pred)
 
-pickle.dump(model, open('model_022623_night.pkl', 'wb'))
+pickle.dump(model, open('model_final.pkl', 'wb'))
