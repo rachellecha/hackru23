@@ -42,9 +42,11 @@ test_data = Pool(data=X_test,
                   cat_features=cat_features
                  )
 
-model = CatBoostRegressor(iterations=500,
+model = CatBoostRegressor(iterations=1000,
                           learning_rate=0.1,
+                          early_stopping_rounds=5,
                           depth=10)
+
 
 model.fit(X_train, 
           y_train, 
